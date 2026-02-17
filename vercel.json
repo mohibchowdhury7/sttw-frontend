@@ -1,4 +1,5 @@
 {
+  "framework": "angular",
   "rewrites": [
     {
       "source": "/api/:path*",
