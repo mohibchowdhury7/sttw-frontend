@@ -7,10 +7,12 @@ import { AvailabilityDay } from '../../../models/availability.model';
 })
 export class AvailabilityCalendar {
   availabilityDays = input<AvailabilityDay[]>([]);
+  availabilityLoading = input<boolean>(false);
   selectedCheckIn = input<string | null>(null);
   selectedCheckOut = input<string | null>(null);
 
   dateSelected = output<string>();
+  monthChanged = output<{ year: number; month: number }>();
 
   currentMonth = signal(new Date().getMonth());
   currentYear = signal(new Date().getFullYear());
@@ -87,6 +89,7 @@ export class AvailabilityCalendar {
     } else {
       this.currentMonth.update((m) => m - 1);
     }
+    this.monthChanged.emit({ year: this.currentYear(), month: this.currentMonth() });
   }
 
   nextMonth(): void {
@@ -96,6 +99,7 @@ export class AvailabilityCalendar {
     } else {
       this.currentMonth.update((m) => m + 1);
     }
+    this.monthChanged.emit({ year: this.currentYear(), month: this.currentMonth() });
   }
 
   onDayClick(day: CalendarDay | null): void {

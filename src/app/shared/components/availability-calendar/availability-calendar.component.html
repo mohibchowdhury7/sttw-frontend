@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg border border-stone-200 shadow-sm p-4 sm:p-6">
+<div class="relative bg-white rounded-lg border border-stone-200 shadow-sm p-4 sm:p-6">
   <!-- Header / Navigation -->
   <div class="flex items-center justify-between mb-4">
     <button
@@ -75,6 +75,19 @@
       }
     }
   </div>
+
+  <!-- Loading Overlay -->
+  @if (availabilityLoading()) {
+    <div class="absolute inset-0 flex items-center justify-center bg-white/70 rounded-lg z-10">
+      <div class="flex flex-col items-center gap-2">
+        <svg class="w-6 h-6 animate-spin text-stone-400" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+        <span class="text-xs text-stone-400 font-medium">Loading availability...</span>
+      </div>
+    </div>
+  }
 
   <!-- Legend -->
   <div class="mt-4 flex flex-wrap gap-4 text-xs text-stone-500">

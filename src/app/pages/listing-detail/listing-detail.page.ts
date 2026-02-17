@@ -27,8 +27,11 @@ export class ListingDetailPage implements OnInit {
 
   listing = signal<HostawayListing | null>(null);
   availability = signal<AvailabilityDay[]>([]);
+  availabilityLoading = signal(false);
   loading = signal(true);
   error = signal<string | null>(null);
+
+  private loadedMonths = new Set<string>();
 
   selectedCheckIn = signal<string | null>(null);
   selectedCheckOut = signal<string | null>(null);
@@ -107,6 +110,32 @@ export class ListingDetailPage implements OnInit {
     });
   }
 
+  onMonthChanged(event: { year: number; month: number }): void {
+    const key = this.monthKey(event.year, event.month);
+    if (this.loadedMonths.has(key)) return;
+
+    const listingId = Number(this.route.snapshot.paramMap.get('listingId'));
+    if (!listingId) return;
+
+    const start = `${event.year}-${String(event.month + 1).padStart(2, '0')}-01`;
+    const lastDay = new Date(event.year, event.month + 1, 0).getDate();
+    const end = `${event.year}-${String(event.month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+    this.availabilityLoading.set(true);
+
+    this.availabilityService.getAvailability(listingId, start, end).subscribe({
+      next: (response) => {
+        this.availability.update((existing) => [...existing, ...response.days]);
+        this.loadedMonths.add(key);
+        this.availabilityLoading.set(false);
+      },
+      error: () => {
+        this.loadedMonths.add(key);
+        this.availabilityLoading.set(false);
+      },
+    });
+  }
+
   private loadAvailability(listingId: number): void {
     const today = new Date();
     const start = this.formatDate(today);
@@ -120,11 +149,25 @@ export class ListingDetailPage implements OnInit {
       .subscribe({
         next: (response) => {
           this.availability.set(response.days);
+          this.registerLoadedMonths(today, end);
         },
         error: () => {
           // Availability load failure is non-blocking
         },
       });
+  }
+
+  private registerLoadedMonths(start: Date, end: Date): void {
+    const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+    while (cursor <= endMonth) {
+      this.loadedMonths.add(this.monthKey(cursor.getFullYear(), cursor.getMonth()));
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+  }
+
+  private monthKey(year: number, month: number): string {
+    return `${year}-${String(month + 1).padStart(2, '0')}`;
   }
 
   private formatHour(hour: number): string {

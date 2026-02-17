@@ -150,9 +150,11 @@
           <h2 class="mb-4 text-xl font-bold text-stone-800">Availability</h2>
           <app-availability-calendar
             [availabilityDays]="availability()"
+            [availabilityLoading]="availabilityLoading()"
             [selectedCheckIn]="selectedCheckIn()"
             [selectedCheckOut]="selectedCheckOut()"
             (dateSelected)="onDateSelected($event)"
+            (monthChanged)="onMonthChanged($event)"
           />
         </div>
 
