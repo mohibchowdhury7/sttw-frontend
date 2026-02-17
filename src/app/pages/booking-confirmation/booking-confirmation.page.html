@@ -1,0 +1,123 @@
+<!-- Confirmation Content -->
+<section class="mx-auto max-w-2xl px-4 py-16 sm:py-24">
+  @if (hasData() && booking(); as booking) {
+    <!-- Success Icon -->
+    <div class="mb-8 text-center">
+      <div
+        class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100"
+      >
+        <svg
+          class="h-10 w-10 text-emerald-600"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      </div>
+      <h1 class="text-3xl font-extrabold text-stone-800 sm:text-4xl">
+        Booking Confirmed!
+      </h1>
+      <p class="mt-3 text-lg text-stone-500">
+        Your vacation is booked. Get ready for an amazing trip!
+      </p>
+    </div>
+
+    <!-- Booking Details Card -->
+    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200 sm:p-8">
+      <h2 class="mb-5 text-lg font-bold text-stone-800">Booking Details</h2>
+
+      <div class="divide-y divide-stone-100">
+        <div class="flex items-start justify-between py-3">
+          <span class="text-sm text-stone-500">Booking ID</span>
+          <span class="font-mono text-sm font-semibold text-stone-600">
+            {{ booking.bookingId }}
+          </span>
+        </div>
+
+        @if (listingName()) {
+          <div class="flex items-start justify-between py-3">
+            <span class="text-sm text-stone-500">Property</span>
+            <span class="text-right font-semibold text-stone-800">
+              {{ listingName() }}
+            </span>
+          </div>
+        }
+
+        <div class="flex items-start justify-between py-3">
+          <span class="text-sm text-stone-500">Check-in</span>
+          <span class="font-semibold text-stone-800">{{ booking.checkIn }}</span>
+        </div>
+
+        <div class="flex items-start justify-between py-3">
+          <span class="text-sm text-stone-500">Check-out</span>
+          <span class="font-semibold text-stone-800">{{ booking.checkOut }}</span>
+        </div>
+
+        @if (booking.total != null) {
+          <div class="flex items-start justify-between py-3">
+            <span class="text-sm text-stone-500">Total</span>
+            <span class="text-lg font-bold text-stone-800">
+              {{ booking.currency ?? '$' }}{{ booking.total }}
+            </span>
+          </div>
+        }
+
+        <div class="flex items-start justify-between py-3">
+          <span class="text-sm text-stone-500">Status</span>
+          <span
+            class="inline-block rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700"
+          >
+            {{ booking.status }}
+          </span>
+        </div>
+
+        <div class="flex items-start justify-between py-3">
+          <span class="text-sm text-stone-500">Created</span>
+          <span class="text-sm text-stone-800">{{ booking.createdAt }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <a
+        routerLink="/listings"
+        class="inline-flex items-center gap-2 rounded-xl bg-stone-800 px-8 py-3.5 font-semibold text-white shadow-sm transition hover:bg-stone-900 hover:shadow-md"
+      >
+        Browse More
+      </a>
+      <a
+        routerLink="/my-bookings"
+        class="inline-flex items-center gap-2 rounded-xl border border-stone-300 px-8 py-3.5 font-semibold text-stone-700 transition hover:bg-stone-50"
+      >
+        My Bookings
+      </a>
+    </div>
+  } @else {
+    <!-- Fallback: No Booking Data -->
+    <div class="py-20 text-center">
+      <svg class="mx-auto mb-4 h-16 w-16 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+      </svg>
+      <h1 class="mb-2 text-2xl font-bold text-stone-700">
+        No booking information found
+      </h1>
+      <p class="mb-6 text-stone-500">
+        It looks like you arrived here without booking data. If you just completed a
+        booking, please check your email for confirmation.
+      </p>
+      <a
+        routerLink="/"
+        class="inline-flex items-center gap-2 rounded-xl bg-stone-800 px-8 py-3 font-semibold text-white shadow-sm transition hover:bg-stone-900 hover:shadow-md"
+      >
+        Go Home
+      </a>
+    </div>
+  }
+</section>

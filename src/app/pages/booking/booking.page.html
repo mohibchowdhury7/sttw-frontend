@@ -1,0 +1,196 @@
+<!-- Page Header -->
+<section class="border-b border-stone-200 bg-stone-50 py-10">
+  <div class="mx-auto max-w-4xl px-4">
+    <p class="mb-1 text-sm font-semibold uppercase tracking-widest text-amber-600">Almost there</p>
+    <h1 class="text-3xl font-extrabold tracking-tight text-stone-800">Complete Your Booking</h1>
+    <p class="mt-1 text-stone-500">Just a few details and you're all set!</p>
+  </div>
+</section>
+
+<section class="mx-auto max-w-4xl px-4 py-10">
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="animate-pulse space-y-4">
+      <div class="h-40 w-full rounded-xl bg-stone-100"></div>
+      <div class="h-80 w-full rounded-xl bg-stone-100"></div>
+    </div>
+  }
+
+  @if (!loading()) {
+    <div class="flex flex-col gap-8 lg:flex-row">
+      <!-- Left: Guest Form -->
+      <div class="flex-1">
+        <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200 sm:p-8">
+          <h2 class="mb-6 text-lg font-bold text-stone-800">Guest Information</h2>
+
+          <form [formGroup]="guestForm" (ngSubmit)="onSubmit()" class="space-y-5">
+            <!-- First Name -->
+            <div>
+              <label for="firstName" class="mb-1.5 block text-sm font-medium text-stone-700">
+                First Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                class="w-full rounded-xl border border-stone-300 px-4 py-3 text-stone-800 transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none"
+                [class.border-red-400]="isFieldInvalid('firstName')"
+                placeholder="Your first name"
+              />
+              @if (isFieldInvalid('firstName')) {
+                <p class="mt-1 text-sm text-red-500">{{ getFieldError('firstName') }}</p>
+              }
+            </div>
+
+            <!-- Last Name -->
+            <div>
+              <label for="lastName" class="mb-1.5 block text-sm font-medium text-stone-700">
+                Last Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                class="w-full rounded-xl border border-stone-300 px-4 py-3 text-stone-800 transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none"
+                [class.border-red-400]="isFieldInvalid('lastName')"
+                placeholder="Your last name"
+              />
+              @if (isFieldInvalid('lastName')) {
+                <p class="mt-1 text-sm text-red-500">{{ getFieldError('lastName') }}</p>
+              }
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="email" class="mb-1.5 block text-sm font-medium text-stone-700">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="w-full rounded-xl border border-stone-300 px-4 py-3 text-stone-800 transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none"
+                [class.border-red-400]="isFieldInvalid('email')"
+                placeholder="you@example.com"
+              />
+              @if (isFieldInvalid('email')) {
+                <p class="mt-1 text-sm text-red-500">{{ getFieldError('email') }}</p>
+              }
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label for="phone" class="mb-1.5 block text-sm font-medium text-stone-700">
+                Phone <span class="text-stone-400">(optional)</span>
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                class="w-full rounded-xl border border-stone-300 px-4 py-3 text-stone-800 transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none"
+                placeholder="+1 (555) 123-4567"
+              />
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label for="notes" class="mb-1.5 block text-sm font-medium text-stone-700">
+                Special Requests <span class="text-stone-400">(optional)</span>
+              </label>
+              <textarea
+                id="notes"
+                formControlName="notes"
+                rows="3"
+                class="w-full resize-none rounded-xl border border-stone-300 px-4 py-3 text-stone-800 transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none"
+                placeholder="Any special requests or notes for your stay..."
+              ></textarea>
+            </div>
+
+            <!-- Error Message -->
+            @if (submitError()) {
+              <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+                {{ submitError() }}
+              </div>
+            }
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              [disabled]="submitting()"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-8 py-4 text-lg font-semibold text-white shadow-sm transition-all hover:bg-amber-600 hover:shadow-md disabled:opacity-60"
+            >
+              @if (submitting()) {
+                <svg
+                  class="h-5 w-5 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
+                </svg>
+                Processing...
+              } @else {
+                Confirm Booking
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Booking Summary -->
+      <div class="lg:w-80">
+        <div class="sticky top-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200">
+          <h3 class="mb-4 text-lg font-bold text-stone-800">Booking Summary</h3>
+
+          @if (listing(); as listing) {
+            <div class="space-y-3">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-stone-400">Property</p>
+                <p class="mt-0.5 font-semibold text-stone-800">{{ listing.name }}</p>
+              </div>
+
+              @if (checkIn()) {
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-stone-400">Check-in</p>
+                  <p class="mt-0.5 font-semibold text-stone-800">{{ checkIn() }}</p>
+                </div>
+              }
+
+              @if (checkOut()) {
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-stone-400">Check-out</p>
+                  <p class="mt-0.5 font-semibold text-stone-800">{{ checkOut() }}</p>
+                </div>
+              }
+
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-stone-400">Guests</p>
+                <p class="mt-0.5 font-semibold text-stone-800">{{ guests() }}</p>
+              </div>
+            </div>
+          } @else {
+            <p class="text-sm text-stone-500">Listing not found.</p>
+          }
+
+          <hr class="my-4 border-stone-100" />
+
+          <p class="text-xs text-stone-400">
+            Payment will be collected at the property. No credit card required.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</section>

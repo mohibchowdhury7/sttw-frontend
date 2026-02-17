@@ -1,0 +1,102 @@
+<!-- Page Header -->
+<section class="border-b border-stone-200 bg-stone-50 py-10">
+  <div class="mx-auto max-w-5xl px-4">
+    <p class="mb-1 text-sm font-semibold uppercase tracking-widest text-amber-600">Your trips</p>
+    <h1 class="text-3xl font-extrabold tracking-tight text-stone-800">My Bookings</h1>
+    <p class="mt-1 text-stone-500">Track all your reservations in one place</p>
+  </div>
+</section>
+
+<section class="mx-auto max-w-5xl px-4 py-10">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="animate-pulse space-y-4">
+      <div class="h-24 w-full rounded-xl bg-stone-100"></div>
+      <div class="h-24 w-full rounded-xl bg-stone-100"></div>
+      <div class="h-24 w-full rounded-xl bg-stone-100"></div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="py-20 text-center">
+      <svg class="mx-auto mb-4 h-16 w-16 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+      </svg>
+      <h2 class="mb-2 text-2xl font-bold text-stone-700">{{ error() }}</h2>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    @if (bookings().length === 0) {
+      <!-- Empty State -->
+      <div class="py-20 text-center">
+        <svg class="mx-auto mb-4 h-16 w-16 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+        <h2 class="mb-2 text-2xl font-bold text-stone-700">No bookings yet</h2>
+        <p class="mb-6 text-stone-500">
+          Once you book a stay, it will appear here.
+        </p>
+        <a
+          routerLink="/listings"
+          class="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-8 py-3.5 font-semibold text-white shadow-sm transition hover:bg-amber-600"
+        >
+          Browse Listings
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    } @else {
+      <!-- Bookings List -->
+      <div class="space-y-4">
+        @for (booking of bookings(); track booking.bookingId) {
+          <a
+            [routerLink]="['/my-bookings', booking.bookingId]"
+            class="group block rounded-xl bg-white p-5 shadow-sm ring-1 ring-stone-200 transition-all hover:shadow-md hover:ring-stone-300 sm:p-6"
+          >
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <!-- Left: Booking Info -->
+              <div class="space-y-1.5">
+                <h3 class="text-lg font-bold text-stone-800 group-hover:text-amber-600 transition-colors">
+                  Property #{{ booking.listingId }}
+                </h3>
+                <p class="flex items-center gap-1.5 text-sm text-stone-400">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {{ booking.checkIn }} &rarr; {{ booking.checkOut }}
+                </p>
+              </div>
+
+              <!-- Right: Status & Price -->
+              <div class="flex items-center gap-4">
+                @if (booking.total) {
+                  <span class="text-lg font-bold text-stone-800">
+                    {{ booking.currency || 'USD' }} {{ booking.total | number:'1.0-2' }}
+                  </span>
+                }
+                <span
+                  class="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+                  [class]="
+                    booking.status === 'confirmed'
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : booking.status === 'cancelled'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-amber-50 text-amber-700'
+                  "
+                >
+                  {{ booking.status }}
+                </span>
+                <svg class="h-5 w-5 text-stone-300 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  }
+</section>

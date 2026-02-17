@@ -1,0 +1,184 @@
+<!-- Loading State -->
+@if (loading()) {
+  <div class="mx-auto max-w-6xl px-4 py-16">
+    <div class="animate-pulse space-y-6">
+      <div class="h-80 w-full rounded-2xl bg-gradient-to-br from-stone-100 to-stone-200"></div>
+      <div class="h-8 w-2/3 rounded-xl bg-stone-100"></div>
+      <div class="h-5 w-1/3 rounded-xl bg-stone-100"></div>
+      <div class="h-32 w-full rounded-xl bg-stone-100"></div>
+    </div>
+  </div>
+}
+
+<!-- Error State -->
+@if (error()) {
+  <div class="mx-auto max-w-6xl px-4 py-20 text-center">
+    <svg class="mx-auto mb-4 h-16 w-16 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+    </svg>
+    <h2 class="mb-2 text-2xl font-bold text-stone-700">{{ error() }}</h2>
+    <a
+      routerLink="/listings"
+      class="mt-4 inline-flex items-center gap-2 rounded-xl bg-stone-800 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-stone-900"
+    >
+      Back to Listings
+    </a>
+  </div>
+}
+
+<!-- Listing Content -->
+@if (!loading() && !error() && listing(); as listing) {
+  <!-- Image Gallery -->
+  <section class="mx-auto max-w-6xl px-4 pt-6">
+    <app-image-gallery [images]="imageUrls()" />
+  </section>
+
+  <!-- Main Content: Two-Column Layout -->
+  <section class="mx-auto max-w-6xl px-4 py-8">
+    <div class="flex flex-col gap-8 lg:flex-row">
+      <!-- Left Column: Info + Calendar -->
+      <div class="flex-1 space-y-8">
+        <!-- Name & Location -->
+        <div>
+          <h1 class="text-3xl font-extrabold text-stone-800 sm:text-4xl">
+            {{ listing.name }}
+          </h1>
+          @if (listing.city || listing.country) {
+            <p class="mt-2 flex items-center gap-1.5 text-lg text-stone-400">
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              {{ listing.city }}@if (listing.country) {, {{ listing.country }}}
+            </p>
+          }
+        </div>
+
+        <!-- Quick Info Badges -->
+        <div class="flex flex-wrap gap-2">
+          @if (listing.address) {
+            <span
+              class="inline-flex items-center gap-1.5 rounded-xl bg-stone-50 px-3.5 py-2 text-sm font-medium text-stone-600"
+            >
+              <svg class="h-4 w-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"
+                />
+              </svg>
+              {{ listing.address }}
+            </span>
+          }
+          @if (listing.personCapacity) {
+            <span
+              class="inline-flex items-center gap-1.5 rounded-xl bg-stone-50 px-3.5 py-2 text-sm font-medium text-stone-600"
+            >
+              <svg class="h-4 w-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Up to {{ listing.personCapacity }} guests
+            </span>
+          }
+          @if (checkInTimeFormatted()) {
+            <span
+              class="inline-flex items-center gap-1.5 rounded-xl bg-stone-50 px-3.5 py-2 text-sm font-medium text-stone-600"
+            >
+              <svg class="h-4 w-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Check-in: {{ checkInTimeFormatted() }}
+            </span>
+          }
+          @if (checkOutTimeFormatted()) {
+            <span
+              class="inline-flex items-center gap-1.5 rounded-xl bg-stone-50 px-3.5 py-2 text-sm font-medium text-stone-600"
+            >
+              <svg class="h-4 w-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Check-out: {{ checkOutTimeFormatted() }}
+            </span>
+          }
+        </div>
+
+        <!-- Description -->
+        @if (listing.description) {
+          <div>
+            <h2 class="mb-3 text-xl font-bold text-stone-800">About this property</h2>
+            <div class="space-y-2 leading-relaxed text-stone-500">
+              @for (paragraph of descriptionParagraphs(); track $index) {
+                <p>{{ paragraph }}</p>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Availability Calendar -->
+        <div>
+          <h2 class="mb-4 text-xl font-bold text-stone-800">Availability</h2>
+          <app-availability-calendar
+            [availabilityDays]="availability()"
+            [selectedCheckIn]="selectedCheckIn()"
+            [selectedCheckOut]="selectedCheckOut()"
+            (dateSelected)="onDateSelected($event)"
+          />
+        </div>
+
+        <!-- Guest Selector -->
+        <div>
+          <h2 class="mb-4 text-xl font-bold text-stone-800">Guests</h2>
+          <app-guest-selector
+            [maxGuests]="listing.personCapacity"
+            [(guests)]="guestCount"
+          />
+        </div>
+      </div>
+
+      <!-- Right Column: Booking Sidebar (Sticky) -->
+      <div class="lg:w-96">
+        <div class="sticky top-6">
+          <app-booking-sidebar
+            [listingId]="listing.id"
+            [checkIn]="selectedCheckIn()"
+            [checkOut]="selectedCheckOut()"
+            [guests]="guestCount()"
+            [pricePerNight]="avgPrice()"
+            [currency]="listing.currencyCode"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+}
